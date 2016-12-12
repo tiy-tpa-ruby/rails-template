@@ -1,0 +1,8 @@
+# No spring please
+--skip-spring
+
+# Default to postgres
+--database postgresql
+
+# Use the bootstrap generator template by default
+--template=https://raw.githubusercontent.com/tiy-tpa-ruby/rails-template/master/.rails_template.rb
