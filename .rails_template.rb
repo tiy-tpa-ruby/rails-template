@@ -1,0 +1,1 @@
+/Users/gstark/.rails_template.rb
