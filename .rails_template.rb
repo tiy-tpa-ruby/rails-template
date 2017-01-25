@@ -11,12 +11,19 @@ gem 'font-awesome-rails'
 gem 'jquery-ui-rails'
 
 # Use HAML if desired
-haml = yes?("Prefer HAML?")
-gem 'haml-rails' if haml
+haml = false
+if %x{gem list}.include?("haml (")
+  haml = yes?("Prefer HAML?")
+  gem 'haml-rails' if haml
+end
 
 gem_group :development do
   gem "dotenv-rails"
 end
+
+# For file attachments
+gem "refile", github: "gstark/refile", branch: "updates-for-rails-5", require: "refile/rails"
+gem "refile-postgres"
 
 # For deploying to Heroku
 gem_group :production do
