@@ -42,6 +42,9 @@ APPLICATION_ASSET = "app/assets/stylesheets/application"
 # Change application.css to application.scss
 FileUtils.mv("#{APPLICATION_ASSET}.css", "#{APPLICATION_ASSET}.scss")
 
+# Set the ruby version to match the Gemfile
+file ".ruby-version", RUBY_VERSION
+
 # Require ruby 2.3.1 to make Heroku happier (wish this could use version notation)
 gsub_file "Gemfile", /^source (.*)$/, %{ruby '#{RUBY_VERSION}'\nsource \\1}
 
