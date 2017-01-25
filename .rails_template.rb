@@ -33,9 +33,6 @@ end
 # Zap jbuilder because it makes controller scaffolds noisy
 gsub_file "Gemfile", /.*jbuilder.*/, ""
 
-# Zap turbolinks for now
-gsub_file "Gemfile", /.*turbolinks.*/, ""
-
 # Location of application asset
 APPLICATION_ASSET = "app/assets/stylesheets/application"
 
@@ -43,8 +40,8 @@ APPLICATION_ASSET = "app/assets/stylesheets/application"
 FileUtils.mv("#{APPLICATION_ASSET}.css", "#{APPLICATION_ASSET}.scss")
 
 # Buh bye, require_tree and require_self
-gsub_file "app/assets/stylesheets/application.scss", /\*= require_/, ""
-gsub_file "app/assets/stylesheets/application.js", /\*= require_/, ""
+gsub_file "app/assets/stylesheets/application.scss", /.*\*= require_.*/, ""
+gsub_file "app/assets/javascripts/application.js", /.*\/\/= require_.*/, ""
 
 # Set the ruby version to match the Gemfile
 file ".ruby-version", RUBY_VERSION
