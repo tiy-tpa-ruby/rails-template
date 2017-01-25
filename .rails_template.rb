@@ -42,6 +42,10 @@ APPLICATION_ASSET = "app/assets/stylesheets/application"
 # Change application.css to application.scss
 FileUtils.mv("#{APPLICATION_ASSET}.css", "#{APPLICATION_ASSET}.scss")
 
+# Buh bye, require_tree and require_self
+gsub_file "app/assets/stylesheets/application.scss", /\*= require_/, ""
+gsub_file "app/assets/stylesheets/application.js", /\*= require_/, ""
+
 # Set the ruby version to match the Gemfile
 file ".ruby-version", RUBY_VERSION
 
