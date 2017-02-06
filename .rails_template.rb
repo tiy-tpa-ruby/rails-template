@@ -20,6 +20,7 @@ if %x{gem list}.include?("haml (")
 end
 
 gem_group :development do
+  gem "awesome_print"
   gem "dotenv-rails"
 end
 
