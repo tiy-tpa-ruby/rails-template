@@ -14,7 +14,9 @@ gem 'jquery-ui-rails'
 haml = false
 if %x{gem list}.include?("haml (")
   haml = yes?("Prefer HAML?")
-  gem 'haml-rails' if haml
+
+  # User branch that supports render collection partial
+  gem 'haml-rails', github: "gstark/haml-rails", branch: "render-collection" if haml
 end
 
 gem_group :development do
