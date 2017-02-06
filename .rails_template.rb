@@ -36,6 +36,9 @@ end
 # Zap jbuilder because it makes controller scaffolds noisy
 gsub_file "Gemfile", /.*jbuilder.*/, ""
 
+# Zap coffeescript
+gsub_file "Gemfile", /.*coffee.*/i, ""
+
 # Location of application asset
 APPLICATION_ASSET = "app/assets/stylesheets/application"
 
