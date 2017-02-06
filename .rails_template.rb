@@ -66,6 +66,10 @@ after_bundle do
   # Import bootstrap-social
   append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-social';\n}
 
+  # Import bootstrap generator and variables
+  append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-generators';\n}
+  append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-variables';\n}
+
   if haml
     generate %{bootstrap:install --template-engine=haml --force}
     FileUtils.rm("app/views/layouts/application.html.erb")
