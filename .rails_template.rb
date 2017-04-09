@@ -48,6 +48,8 @@ FileUtils.mv("#{APPLICATION_ASSET}.css", "#{APPLICATION_ASSET}.scss")
 # Buh bye, require_tree and require_self
 gsub_file "app/assets/stylesheets/application.scss", /.*\*= require_.*/, ""
 gsub_file "app/assets/javascripts/application.js", /.*\/\/= require_.*/, ""
+append_file "app/assets/javascripts/application.js", %{//= require 'cable'\n}
+
 
 # Set the ruby version to match the Gemfile
 file ".ruby-version", RUBY_VERSION
