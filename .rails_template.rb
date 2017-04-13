@@ -19,6 +19,15 @@ if %x{gem list}.include?("haml (")
   gem 'haml-rails', github: "gstark/haml-rails", branch: "render-collection" if haml
 end
 
+# Use SLIM if desired
+slim = false
+if %x{gem list}.include?("slim (")
+  haml = yes?("Prefer SLIM?")
+
+  # User branch that supports render collection partial
+  gem 'slim' if slim
+end
+
 gem_group :development do
   gem "awesome_print"
   gem "dotenv-rails"
@@ -50,6 +59,25 @@ gsub_file "app/assets/stylesheets/application.scss", /.*\*= require_.*/, ""
 gsub_file "app/assets/javascripts/application.js", /.*\/\/= require_.*/, ""
 append_file "app/assets/javascripts/application.js", %{//= require 'cable'\n}
 
+# Make the schema.rb readonly by default.
+# This prevents accidental editing of the schema.rb
+# append_file "Rakefile", %{
+# task :remove_db_schema_read do
+#   path = Rails.root.join("db/schema.rb")
+#   if File.exist?(path)
+#     File.chmod(0444, path)
+#   end
+# end
+# task :add_db_schema_read do
+#   path = Rails.root.join("db/schema.rb")
+#   if File.exist?(path)
+#     File.chmod(0644, path)
+#   end
+# end
+# Rake::Task["db:schema:dump"].enhance [:add_db_schema_read] do
+#   Rake::Task[:remove_db_schema_read].invoke
+# end
+# }
 
 # Set the ruby version to match the Gemfile
 file ".ruby-version", RUBY_VERSION
@@ -75,8 +103,12 @@ after_bundle do
   append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-generators';\n}
   append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-variables';\n}
 
-  if haml
+  case
+  when haml
     generate %{bootstrap:install --template-engine=haml --force}
+    FileUtils.rm("app/views/layouts/application.html.erb")
+  when slim
+    generate %{bootstrap:install --template-engine=slim --force}
     FileUtils.rm("app/views/layouts/application.html.erb")
   else
     generate %{bootstrap:install --stylesheet-engine=scss --force}
