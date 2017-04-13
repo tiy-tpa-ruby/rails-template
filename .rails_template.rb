@@ -22,7 +22,7 @@ end
 # Use SLIM if desired
 slim = false
 if %x{gem list}.include?("slim (")
-  haml = yes?("Prefer SLIM?")
+  slim = yes?("Prefer SLIM?")
 
   # User branch that supports render collection partial
   gem 'slim' if slim
