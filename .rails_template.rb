@@ -25,7 +25,7 @@ if %x{gem list}.include?("slim (")
   slim = yes?("Prefer SLIM?")
 
   # User branch that supports render collection partial
-  gem 'slim' if slim
+  gem 'slim-rails' if slim
 end
 
 gem_group :development do
@@ -87,6 +87,9 @@ gsub_file "Gemfile", /^source (.*)$/, %{ruby '#{RUBY_VERSION}'\nsource \\1}
 
 # Set a default Procfile to make Heroku happy
 file "Procfile", "web: bundle exec puma -C config/puma.rb"
+
+# Ensure gitignore includes .env
+append_file ".gitignore", ".env"
 
 # Install the bootstrap stuff
 after_bundle do
