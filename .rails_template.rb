@@ -33,10 +33,6 @@ gem_group :development do
   gem "dotenv-rails"
 end
 
-# For file attachments
-gem "refile", github: "gstark/refile", branch: "updates-for-rails-5", require: "refile/rails"
-gem "refile-postgres"
-
 # For deploying to Heroku
 gem_group :production do
   gem "rails_12factor"
@@ -82,7 +78,7 @@ append_file "app/assets/javascripts/application.js", %{//= require 'cable'\n}
 # Set the ruby version to match the Gemfile
 file ".ruby-version", RUBY_VERSION
 
-# Require ruby 2.3.1 to make Heroku happier (wish this could use version notation)
+# Require ruby version to make Heroku happier (wish this could use version notation)
 gsub_file "Gemfile", /^source (.*)$/, %{ruby '#{RUBY_VERSION}'\nsource \\1}
 
 # Set a default Procfile to make Heroku happy
