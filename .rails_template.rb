@@ -115,15 +115,12 @@ after_bundle do
 end
 
 after_bundle do
-  if yes?("Create Git repo?")
-    git :init
-    git add: '.'
-    git commit: "-a -m 'Initial commit'"
-    unless %x{which hub}.empty?
-      if yes?("Push this repo to github?")
-        run %{hub create}
-        run %{git push --set-upstream origin master}
-      end
+  unless %x{which hub}.empty?
+    if yes?("Push this repo to github?")
+      git add: '.'
+      git commit: "-a -m 'Initial commit'"
+      run %{hub create}
+      run %{git push --set-upstream origin master}
     end
   end
 end
