@@ -1,11 +1,6 @@
-# No spring please
 --skip-spring
-
-# Default to postgres
 --database postgresql
-
-# Buhbye turbolinks
 --skip-turbolinks
-
-# Use the bootstrap generator template by default
+--skip-coffee
+--skip-action-cable
 --template=https://raw.githubusercontent.com/tiy-tpa-ruby/rails-template/master/.rails_template.rb

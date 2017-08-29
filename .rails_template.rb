@@ -53,7 +53,9 @@ FileUtils.mv("#{APPLICATION_ASSET}.css", "#{APPLICATION_ASSET}.scss")
 # Buh bye, require_tree and require_self
 gsub_file "app/assets/stylesheets/application.scss", /.*\*= require_.*/, ""
 gsub_file "app/assets/javascripts/application.js", /.*\/\/= require_.*/, ""
-append_file "app/assets/javascripts/application.js", %{//= require 'cable'\n}
+if File.exists?("app/assets/javascripts/cable.js")
+  append_file "app/assets/javascripts/application.js", %{//= require 'cable'\n}
+end
 
 # Make the schema.rb readonly by default.
 # This prevents accidental editing of the schema.rb
