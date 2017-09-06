@@ -8,6 +8,7 @@ gem 'bootstrap-social-rails'
 gem 'font-awesome-rails'
 
 # For jquery UI support
+gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 # Use HAML if desired
@@ -47,14 +48,22 @@ gsub_file "Gemfile", /.*coffee.*/i, ""
 # Location of application asset
 APPLICATION_ASSET = "app/assets/stylesheets/application"
 
-# Change application.css to application.scss
-FileUtils.mv("#{APPLICATION_ASSET}.css", "#{APPLICATION_ASSET}.scss")
+assets_exist = File.exists?("app/assets/")
 
-# Buh bye, require_tree and require_self
-gsub_file "app/assets/stylesheets/application.scss", /.*\*= require_.*/, ""
-gsub_file "app/assets/javascripts/application.js", /.*\/\/= require_.*/, ""
-if File.exists?("app/assets/javascripts/cable.js")
-  append_file "app/assets/javascripts/application.js", %{//= require 'cable'\n}
+if assets_exist
+  # Change application.css to application.scss
+  FileUtils.mv("#{APPLICATION_ASSET}.css", "#{APPLICATION_ASSET}.scss")
+
+  # Buh bye, require_tree and require_self
+  gsub_file "app/assets/stylesheets/application.scss", /.*\*= require_.*/, ""
+  gsub_file "app/assets/javascripts/application.js", /.*\/\/= require_.*/, ""
+  if File.exists?("app/assets/javascripts/cable.js")
+    append_file "app/assets/javascripts/application.js", %{//= require 'cable'\n}
+  end
+
+  # Add back in jQuery back in for bootstrap support
+  append_file "app/assets/javascripts/application.js", "@import 'jquery';"
+  append_file "app/assets/javascripts/application.js", "@import 'jquery_ujs';"
 end
 
 # Make the schema.rb readonly by default.
@@ -91,28 +100,30 @@ append_file ".gitignore", ".env"
 
 # Install the bootstrap stuff
 after_bundle do
-  # Blank lines
-  append_file "#{APPLICATION_ASSET}.scss", %{\n\n}
+  if assets_exist
+    # Blank lines
+    append_file "#{APPLICATION_ASSET}.scss", %{\n\n}
 
-  # Import font-awesome
-  append_file "#{APPLICATION_ASSET}.scss", %{@import 'font-awesome';\n}
+    # Import font-awesome
+    append_file "#{APPLICATION_ASSET}.scss", %{@import 'font-awesome';\n}
 
-  # Import bootstrap-social
-  append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-social';\n}
+    # Import bootstrap-social
+    append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-social';\n}
 
-  # Import bootstrap generator and variables
-  append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-generators';\n}
-  append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-variables';\n}
+    # Import bootstrap generator and variables
+    append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-generators';\n}
+    append_file "#{APPLICATION_ASSET}.scss", %{@import 'bootstrap-variables';\n}
 
-  case
-  when haml
-    generate %{bootstrap:install --template-engine=haml --force}
-    FileUtils.rm("app/views/layouts/application.html.erb")
-  when slim
-    generate %{bootstrap:install --template-engine=slim --force}
-    FileUtils.rm("app/views/layouts/application.html.erb")
-  else
-    generate %{bootstrap:install --stylesheet-engine=scss --force}
+    case
+    when haml
+      generate %{bootstrap:install --template-engine=haml --force}
+      FileUtils.rm("app/views/layouts/application.html.erb")
+    when slim
+      generate %{bootstrap:install --template-engine=slim --force}
+      FileUtils.rm("app/views/layouts/application.html.erb")
+    else
+      generate %{bootstrap:install --stylesheet-engine=scss --force}
+    end
   end
 end
 
