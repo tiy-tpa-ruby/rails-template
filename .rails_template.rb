@@ -1,34 +1,3 @@
-# Include bootstrap and the bootstrap generators
-gem "bootstrap-generators", git: "https://github.com/gstark/bootstrap-generators", branch: "includes-simplified-controller-scaffold"
-
-# Include bootstrap social rails
-gem 'bootstrap-social-rails'
-
-# And the font awesome rails
-gem 'font-awesome-rails'
-
-# For jquery UI support
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
-
-# Use HAML if desired
-haml = false
-if %x{gem list}.include?("haml (")
-  haml = yes?("Prefer HAML?")
-
-  # User branch that supports render collection partial
-  gem 'haml-rails', github: "gstark/haml-rails", branch: "render-collection" if haml
-end
-
-# Use SLIM if desired
-slim = false
-if %x{gem list}.include?("slim (")
-  slim = yes?("Prefer SLIM?")
-
-  # User branch that supports render collection partial
-  gem 'slim-rails' if slim
-end
-
 gem_group :development do
   gem "awesome_print"
   gem "dotenv-rails"
@@ -39,11 +8,17 @@ gem_group :production do
   gem "rails_12factor"
 end
 
-# Zap jbuilder because it makes controller scaffolds noisy
-gsub_file "Gemfile", /.*jbuilder.*/, ""
+# Set the ruby version to match the Gemfile
+file ".ruby-version", RUBY_VERSION
 
-# Zap coffeescript
-gsub_file "Gemfile", /.*coffee.*/i, ""
+# Require ruby version to make Heroku happier (wish this could use version notation)
+gsub_file "Gemfile", /^source (.*)$/, %{ruby '#{RUBY_VERSION}'\nsource \\1}
+
+# Set a default Procfile to make Heroku happy
+file "Procfile", "web: bundle exec puma -C config/puma.rb"
+
+# Ensure gitignore includes .env
+append_file ".gitignore", ".env"
 
 # Location of application asset
 APPLICATION_ASSET = "app/assets/stylesheets/application"
@@ -51,6 +26,43 @@ APPLICATION_ASSET = "app/assets/stylesheets/application"
 assets_exist = File.exists?("app/assets/")
 
 if assets_exist
+  # Include bootstrap and the bootstrap generators
+  gem "bootstrap-generators", git: "https://github.com/gstark/bootstrap-generators", branch: "includes-simplified-controller-scaffold"
+
+  # Include bootstrap social rails
+  gem 'bootstrap-social-rails'
+
+  # And the font awesome rails
+  gem 'font-awesome-rails'
+
+  # For jquery UI support
+  gem 'jquery-rails'
+  gem 'jquery-ui-rails'
+
+  # Use HAML if desired
+  haml = false
+  if %x{gem list}.include?("haml (")
+    haml = yes?("Prefer HAML?")
+
+    # User branch that supports render collection partial
+    gem 'haml-rails', github: "gstark/haml-rails", branch: "render-collection" if haml
+  end
+
+  # Use SLIM if desired
+  slim = false
+  if %x{gem list}.include?("slim (")
+    slim = yes?("Prefer SLIM?")
+
+    # User branch that supports render collection partial
+    gem 'slim-rails' if slim
+  end
+
+  # Zap jbuilder because it makes controller scaffolds noisy
+  gsub_file "Gemfile", /.*jbuilder.*/, ""
+
+  # Zap coffeescript
+  gsub_file "Gemfile", /.*coffee.*/i, ""
+
   # Change application.css to application.scss
   FileUtils.mv("#{APPLICATION_ASSET}.css", "#{APPLICATION_ASSET}.scss")
 
@@ -85,18 +97,6 @@ end
 #   Rake::Task[:remove_db_schema_read].invoke
 # end
 # }
-
-# Set the ruby version to match the Gemfile
-file ".ruby-version", RUBY_VERSION
-
-# Require ruby version to make Heroku happier (wish this could use version notation)
-gsub_file "Gemfile", /^source (.*)$/, %{ruby '#{RUBY_VERSION}'\nsource \\1}
-
-# Set a default Procfile to make Heroku happy
-file "Procfile", "web: bundle exec puma -C config/puma.rb"
-
-# Ensure gitignore includes .env
-append_file ".gitignore", ".env"
 
 # Install the bootstrap stuff
 after_bundle do
